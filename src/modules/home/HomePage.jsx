@@ -67,7 +67,7 @@ export function HomePage() {
             <div>
               <p className="kicker">Collection</p>
               <h2 id="collection-title" className="mt-1 font-display text-[clamp(2rem,5vw,4rem)] leading-none">
-                Selected Works
+                Artworks
               </h2>
             </div>
             <Link className="section-link" to="/gallery">Visit Gallery</Link>
