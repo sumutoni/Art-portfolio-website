@@ -1,0 +1,20 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Denis Mpabuka Monogram">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f1010"/>
+      <stop offset="100%" stop-color="#1b1712"/>
+    </linearGradient>
+    <linearGradient id="ink" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f1dfbc"/>
+      <stop offset="100%" stop-color="#b89f74"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="12" fill="url(#bg)"/>
+
+  <path d="M14 13v38h9.5c12.2 0 18.5-7.2 18.5-19 0-11.8-6.3-19-18.5-19H14zm8.2 6.8h1.6c8 0 12 4.1 12 12.2 0 8.1-4 12.2-12 12.2h-1.6V19.8z" fill="url(#ink)"/>
+
+  <path d="M36.6 49V15h6.7l7.1 13.8L57.5 15H64v34h-6.4V27.4l-6 11.6h-2.7l-6-11.6V49h-6.3z" fill="url(#ink)" opacity="0.96"/>
+
+  <path d="M10 48c7-2.8 16-3.2 24 .2" stroke="#c6a46d" stroke-width="1.5" stroke-linecap="round" opacity="0.55"/>
+</svg>
