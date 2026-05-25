@@ -1,4 +1,4 @@
-import { FiMenu, FiMoon, FiSun } from "react-icons/fi";
+﻿import { FiMenu, FiMoon, FiSun } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 export function SiteHeader({ isHero, onOpenAbout, onToggleMenu, theme, onToggleTheme }) {
@@ -21,20 +21,20 @@ export function SiteHeader({ isHero, onOpenAbout, onToggleMenu, theme, onToggleT
         DENIS MPABUKA
       </button>
 
-      <div className="justify-self-end flex items-center gap-4">
+      <div className="justify-self-end mr-5 flex items-center gap-4">
         <nav className="hidden items-center gap-4 md:flex">
           <Link className="text-[0.64rem] uppercase tracking-[0.15em] text-gallery-text/90 hover:text-gallery-text" to="/#collection">Collection</Link>
           <Link className="text-[0.64rem] uppercase tracking-[0.15em] text-gallery-text/90 hover:text-gallery-text" to="/#exhibitions">Exhibitions</Link>
           <button className="text-[0.64rem] uppercase tracking-[0.15em] text-gallery-text/90 hover:text-gallery-text border-0 bg-transparent" type="button" onClick={onOpenAbout}>About</button>
         </nav>
-        <button
+        {/* <button
           className="grid h-8 w-8 place-items-center border border-gallery-line bg-transparent text-gallery-text transition hover:border-gallery-accent hover:text-gallery-accent"
           type="button"
           aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
           onClick={onToggleTheme}
         >
           {theme === "light" ? <FiMoon className="h-3.5 w-3.5" /> : <FiSun className="h-3.5 w-3.5" />}
-        </button>
+        </button> */}
       </div>
     </header>
   );
