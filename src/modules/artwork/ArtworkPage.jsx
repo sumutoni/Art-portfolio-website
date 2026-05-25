@@ -1,6 +1,7 @@
 ﻿import { useEffect, useMemo, useRef, useState } from "react";
 import { fetchArtworks } from "../../core/services/artworkService";
 import { SiteShell } from "../../shared/components/SiteShell";
+import { Link } from "react-router-dom";
 
 export function ArtworkPage() {
   const [artworks, setArtworks] = useState([]);
@@ -75,12 +76,12 @@ export function ArtworkPage() {
                   <h1 className="mt-2 font-display text-[clamp(2.3rem,4.8vw,4.7rem)] leading-[0.95] text-gallery-text">{artwork.title}</h1>
                   <p className="mt-3 text-[0.86rem] uppercase tracking-[0.1em] text-gallery-accent">{artwork.year} · {artwork.medium} · {artwork.size}</p>
                   <p className="mt-5 max-w-[360px] text-[color:var(--text-soft)]">{artwork.story}</p>
-                  <a
+                  <Link
                     className="mt-8 inline-block text-[0.75rem] uppercase tracking-[0.15em] text-gallery-text pb-5 border-b-2 border-gallery-lightAccent"
-                    href={`/acquire?art=${encodeURIComponent(artwork.slug)}`}
+                    to={`/acquire?art=${encodeURIComponent(artwork.slug)}`}
                   >
                     Acquire Artwork
-                  </a>
+                  </Link>
                 </div>
               </div>
               <img className="mt-10 h-full w-full object-cover" src={artwork.image} alt={`Selected artwork ${artwork.title}`} />
