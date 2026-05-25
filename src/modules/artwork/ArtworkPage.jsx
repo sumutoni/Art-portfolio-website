@@ -1,18 +1,53 @@
-﻿import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { fetchArtworkBySlug } from "../../core/services/artworkService";
+﻿import { useEffect, useMemo, useRef, useState } from "react";
+import { fetchArtworks } from "../../core/services/artworkService";
 import { SiteShell } from "../../shared/components/SiteShell";
 
 export function ArtworkPage() {
-  const [searchParams] = useSearchParams();
-  const [artwork, setArtwork] = useState(null);
+  const [artworks, setArtworks] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const sectionsRef = useRef([]);
 
   useEffect(() => {
-    const slug = searchParams.get("art") || "";
-    fetchArtworkBySlug(slug).then(setArtwork).catch(() => setArtwork(null));
-  }, [searchParams]);
+    const params = new URLSearchParams(window.location.search);
+    const selectedSlug = params.get("art") || "";
 
-  if (!artwork) {
+    fetchArtworks()
+      .then((items) => {
+        if (!items.length) {
+          setArtworks([]);
+          return;
+        }
+
+        const startIndex = Math.max(0, items.findIndex((item) => item.slug === selectedSlug));
+        const ordered = [...items.slice(startIndex), ...items.slice(0, startIndex)];
+        setArtworks(ordered);
+      })
+      .catch(() => setArtworks([]));
+  }, []);
+
+  useEffect(() => {
+    if (!artworks.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const index = Number(entry.target.getAttribute("data-index") || 0);
+          setActiveIndex(index);
+        });
+      },
+      { threshold: 0.62 }
+    );
+
+    sectionsRef.current.forEach((section) => section && observer.observe(section));
+    return () => observer.disconnect();
+  }, [artworks]);
+
+  const total = artworks.length;
+  const current = useMemo(() => String(activeIndex + 1).padStart(2, "0"), [activeIndex]);
+  const totalLabel = useMemo(() => String(total).padStart(2, "0"), [total]);
+
+  if (!artworks.length) {
     return (
       <SiteShell>
         <main className="mx-auto flex min-h-screen w-[min(1200px,92vw)] flex-1 items-center pt-20">Loading artwork...</main>
@@ -22,35 +57,43 @@ export function ArtworkPage() {
 
   return (
     <SiteShell>
-      <main className="flex-1 px-4 pt-20">
-        <section className="mx-auto grid w-[min(1200px,92vw)] gap-6 py-20 md:grid-cols-[1.3fr_1fr] md:items-start" aria-live="polite">
-          <div>
-            <img className="h-[min(75svh,680px)] w-full border border-gallery-line object-cover" src={artwork.image} alt={`Selected artwork ${artwork.title}`} />
-          </div>
-          <div>
-            <p className="kicker">Artwork Details</p>
-            <h1 className="mt-1 font-display text-[clamp(2rem,4.2vw,3.3rem)] leading-[1.04] text-gallery-lightText dark:text-gallery-text">{artwork.title}</h1>
-            <p className="mt-3 text-gallery-lightSoft dark:text-gallery-soft">{artwork.story}</p>
-            <ul className="mt-5 text-gallery-lightSoft dark:text-gallery-soft">
-              <li className="mb-1">Year: {artwork.year}</li>
-              <li className="mb-1">Medium: {artwork.medium}</li>
-              <li className="mb-1">Dimensions: {artwork.size}</li>
-              <li className="mb-1">Price: {artwork.price}</li>
-            </ul>
-            <div className="mt-7">
-              <a
-                className="inline-block border border-gallery-accent bg-gallery-accent/15 px-5 py-3 text-xs uppercase tracking-[0.08em] text-gallery-lightText transition hover:-translate-y-[1px] hover:bg-gallery-accent/30 dark:text-gallery-text"
-                href={`/acquire?art=${encodeURIComponent(artwork.slug)}`}
-              >
-                Acquire Artwork
-              </a>
+      <main className="h-screen overflow-y-auto snap-y snap-mandatory pt-16">
+        {artworks.map((artwork, index) => (
+          <section
+            key={artwork.slug}
+            ref={(node) => {
+              sectionsRef.current[index] = node;
+            }}
+            data-index={index}
+            className="relative snap-start min-h-screen px-4 py-8 md:px-8"
+            aria-live="polite"
+          >
+            <div className="mx-auto grid h-[calc(100vh-7rem)] w-[min(1320px,95vw)] gap-0 overflow-hidden md:grid-cols-[1fr_1.05fr]">
+              <div className="flex items-center p-[clamp(1rem,2.2vw,2rem)]">
+                <div className="max-w-[430px]">
+                  <p className="kicker">Featured Work</p>
+                  <h1 className="mt-2 font-display text-[clamp(2.3rem,4.8vw,4.7rem)] leading-[0.95] text-gallery-text">{artwork.title}</h1>
+                  <p className="mt-3 text-[0.86rem] uppercase tracking-[0.1em] text-gallery-accent">{artwork.year} · {artwork.medium} · {artwork.size}</p>
+                  <p className="mt-5 max-w-[360px] text-[color:var(--text-soft)]">{artwork.story}</p>
+                  <a
+                    className="mt-8 inline-block text-[0.75rem] uppercase tracking-[0.15em] text-gallery-text pb-5 border-b-2 border-gallery-lightAccent"
+                    href={`/acquire?art=${encodeURIComponent(artwork.slug)}`}
+                  >
+                    Acquire Artwork
+                  </a>
+                </div>
+              </div>
+              <img className="mt-10 h-full w-full object-cover" src={artwork.image} alt={`Selected artwork ${artwork.title}`} />
             </div>
-          </div>
-        </section>
+
+            <div className="pointer-events-none absolute bottom-7 left-8 flex items-center gap-3 text-[0.72rem] uppercase tracking-[0.12em] text-gallery-text">
+              <span>{current} / {totalLabel}</span>
+              <span className="h-px w-8 bg-gallery-accent" />
+              <span>Scroll</span>
+            </div>
+          </section>
+        ))}
       </main>
-      <footer className="border-t border-gallery-line px-6 py-6 text-center text-gallery-soft">
-        <p>© {new Date().getFullYear()} Denis Mpabuka Studio</p>
-      </footer>
     </SiteShell>
   );
 }

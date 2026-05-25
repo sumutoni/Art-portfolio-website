@@ -2,17 +2,24 @@
 import { Link, useLocation } from "react-router-dom";
 import { fetchArtworks } from "../../core/services/artworkService";
 import { SiteShell } from "../../shared/components/SiteShell";
+import { SiteFooter } from "../../shared/components/SiteFooter";
 import { useHeroHeader } from "../../shared/hooks/useHeroHeader";
 
 export function HomePage() {
   const [artworks, setArtworks] = useState([]);
   const [isHero, setIsHero] = useState(true);
+  const [heroStage, setHeroStage] = useState(0);
   const location = useLocation();
 
   useHeroHeader(true, setIsHero);
 
   useEffect(() => {
     fetchArtworks().then(setArtworks).catch(() => setArtworks([]));
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setHeroStage(1), 3000);
+    return () => window.clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -32,100 +39,83 @@ export function HomePage() {
   return (
     <SiteShell isHero={isHero}>
       <main className="flex-1">
-        <section id="home" className="relative grid min-h-screen place-items-center px-5 pb-8 pt-24" aria-label="Hero">
-          <video
-            className="absolute inset-0 h-full w-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster="https://images.unsplash.com/photo-1580136579312-94651dfd596d?auto=format&fit=crop&w=1600&q=80"
-          >
-            <source src="https://cdn.coverr.co/videos/coverr-paint-brush-on-canvas-1579/1080p.mp4" type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/90" />
-          <div className="relative z-10 max-w-[900px] text-center">
-            <p className="kicker">Cinematic Gallery</p>
-            <h1 className="mt-1 font-display text-[clamp(2.4rem,7vw,5.5rem)] leading-[1.02] text-gallery-text">
-              Identity, emotion, and dignity in color.
-            </h1>
-            <p className="mx-auto mb-6 mt-3 max-w-[700px] text-gallery-soft">
-              Discover the contemporary paintings of Rwanda-based artist Denis Mpabuka, where expressive forms and bold
-              palettes reveal resilience, social inclusion, and the beauty of diversity.
-            </p>
-            <a
-              className="inline-block border border-gallery-accent bg-gallery-accent/15 px-5 py-3 text-xs uppercase tracking-[0.08em] text-gallery-text transition hover:-translate-y-[1px] hover:bg-gallery-accent/30"
-              href="#collection"
-            >
-              Enter Collection
-            </a>
-          </div>
-        </section>
-
-        <section id="collection" className="mx-auto w-[min(1200px,92vw)] py-24" aria-labelledby="collection-title">
-          <div className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
-            <div>
-              <p className="kicker">Collection</p>
-              <h2 id="collection-title" className="mt-1 font-display text-[clamp(2rem,5vw,4rem)] leading-none">
-                Artworks
-              </h2>
+        <section id="home" className="relative min-h-screen overflow-hidden" aria-label="Hero">
+          <div className={`absolute inset-0 transition-opacity duration-[1200ms] ${heroStage === 0 ? "opacity-100" : "opacity-0"}`}>
+            <img
+              className="h-full w-full object-cover"
+              src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=2000&q=80"
+              alt="Denis Mpabuka artwork texture"
+            />
+            <div className="hero-overlay absolute inset-0" />
+            <div className="absolute inset-0 grid place-items-center px-5 text-center">
+              <div>
+                <p className="kicker">Contemporary Painter · Rwanda</p>
+                <h1 className="mt-2 font-display text-[clamp(2.5rem,7vw,5.4rem)] leading-[0.95] text-gallery-text">Denis Mpabuka</h1>
+                <p className="mt-3 text-[1.1rem] italic text-[#e4dccd]">Stories of identity, memory, and becoming</p>
+                <a className="mt-7 inline-block border-b border-gallery-accent pb-1 text-[0.75rem] uppercase tracking-[0.16em] text-gallery-text" href="#collection">
+                  Explore the Collection
+                </a>
+              </div>
             </div>
-            <Link className="section-link" to="/gallery">Visit Gallery</Link>
           </div>
 
-          <div className="grid grid-cols-12 gap-5">
-            {featured.map((art, index) => (
-              <Link
-                key={art.slug}
-                className={`col-span-12 overflow-hidden border border-gallery-line bg-black/10 transition hover:-translate-y-1 hover:border-gallery-accent ${index % 2 === 0 ? "md:col-span-5" : "md:col-span-7"}`}
-                to={`/artwork?art=${encodeURIComponent(art.slug)}`}
-              >
-                <img className="h-[clamp(240px,32vw,460px)] w-full object-cover" src={art.image} alt={`${art.title} by Denis Mpabuka`} loading="lazy" />
-                <div className="border-t border-gallery-line p-4">
-                  <h3 className="font-display text-3xl">{art.title}</h3>
-                  <p className="text-sm text-gallery-lightSoft dark:text-gallery-soft">{art.year} · {art.price}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          <div className="mt-7 flex justify-center">
-            <Link className="section-link" to="/gallery">Visit Gallery</Link>
+          <div className={`absolute inset-0 transition-opacity duration-[1400ms] ${heroStage === 1 ? "opacity-100" : "opacity-0"}`}>
+            <video
+              className="h-full w-full object-cover"
+              autoPlay
+              muted
+              loop
+              playsInline
+              poster="https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?auto=format&fit=crop&w=2000&q=80"
+            >
+              <source src="https://cdn.coverr.co/videos/coverr-painting-in-the-workshop-1571692365448/1080p.mp4" type="video/mp4" />
+            </video>
+            <div className="hero-overlay absolute inset-0" />
+            <div className="absolute left-[7%] top-1/2 max-w-[520px] -translate-y-1/2 text-left">
+              <p className="kicker">The Studio</p>
+              <h2 className="mt-1 font-display text-[clamp(2.1rem,5vw,4rem)] leading-[0.95] text-gallery-text">Where emotion takes form.</h2>
+              <p className="mt-4 max-w-[420px] text-[#d3ccbf]">Close-up brushwork, quiet studio atmosphere, and cinematic reveals of finished artwork.</p>
+              <a className="mt-7 inline-flex items-center gap-3 border border-gallery-accent px-5 py-3 text-[0.72rem] uppercase tracking-[0.14em] text-gallery-text" href="#collection">
+                Discover the Work <span aria-hidden="true">→</span>
+              </a>
+            </div>
           </div>
         </section>
 
-        <section id="kisanii" className="mx-auto w-[min(1200px,92vw)] py-24" aria-labelledby="kisanii-title">
-          <div className="grid gap-6 border border-gallery-line bg-black/10 p-[clamp(1rem,2.5vw,2rem)] md:grid-cols-[1.15fr_1fr] md:items-center">
+        <section id="collection" className="relative min-h-screen overflow-hidden" aria-labelledby="collection-title">
+          <img
+            className="absolute inset-0 h-full w-full object-cover"
+            src="https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?auto=format&fit=crop&w=2200&q=80"
+            alt="Gallery room featuring contemporary paintings"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,6,8,0.86)_0%,rgba(5,6,8,0.64)_34%,rgba(5,6,8,0.3)_66%,rgba(5,6,8,0.16)_100%)]" />
+          <div className="relative z-10 flex min-h-screen items-center px-[7vw]">
+            <div className="max-w-[440px]">
+              <p className="kicker">Step Into the World</p>
+              <h2 id="collection-title" className="mt-2 font-display text-[clamp(2.3rem,5vw,4.6rem)] leading-[0.95] text-gallery-text">Art that speaks beyond time.</h2>
+              <p className="mt-4 text-[#d0c8bb]">Explore paintings that reflect resilience, heritage, and the beauty of becoming.</p>
+              <Link className="mt-8 inline-flex items-center gap-3 border-b border-gallery-accent pb-1 text-[0.75rem] uppercase tracking-[0.16em] text-gallery-text" to="/gallery">
+                Explore the Collection <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section id="kisanii" className="mx-auto w-[min(1240px,92vw)] py-24" aria-labelledby="kisanii-title">
+          <div className="grid gap-6 glass-panel p-[clamp(1rem,2.5vw,2rem)] md:grid-cols-[1.15fr_1fr] md:items-center">
             <div>
               <p className="kicker">Kisanii Space</p>
-              <h2 id="kisanii-title" className="mt-1 font-display text-[clamp(2rem,5vw,4rem)] leading-none">
-                Kisanii Art and Event Space
-              </h2>
-              <p className="mt-3 text-gallery-lightSoft dark:text-gallery-soft">
-                Founded by Denis Mpabuka, Kisanii Space is a platform dedicated to supporting and promoting emerging
-                artists in Rwanda. It is both a creative incubator and a cultural meeting point for exhibitions,
-                mentorship, and collaboration.
-              </p>
-              <p className="mt-3 text-gallery-lightSoft dark:text-gallery-soft">
-                Through Kisanii, Denis extends his practice beyond the studio, building inclusive opportunities for new
-                artistic voices to be seen, collected, and celebrated.
-              </p>
+              <h2 id="kisanii-title" className="mt-1 font-display text-[clamp(2rem,5vw,4.4rem)] leading-none">Kisanii Art and Event Space</h2>
+              <p className="mt-3 text-[color:var(--text-soft)]">Founded by Denis Mpabuka, Kisanii Space is a platform dedicated to supporting and promoting emerging artists in Rwanda.</p>
             </div>
-            <img
-              className="h-[min(60svh,460px)] w-full border border-gallery-line object-cover"
-              src="https://images.unsplash.com/photo-1459908676235-d5f02a50184b?auto=format&fit=crop&w=1200&q=80"
-              alt="Kisanii art and event space ambience"
-              loading="lazy"
-            />
+            <img className="h-[min(60svh,460px)] w-full border border-gallery-line object-cover" src="https://images.unsplash.com/photo-1459908676235-d5f02a50184b?auto=format&fit=crop&w=1200&q=80" alt="Kisanii space" loading="lazy" />
           </div>
         </section>
 
-        <section id="exhibitions" className="mx-auto w-[min(1200px,92vw)] py-24" aria-labelledby="exhibitions-title">
+        <section id="exhibitions" className="mx-auto w-[min(1240px,92vw)] py-24" aria-labelledby="exhibitions-title">
           <div className="mb-8">
             <p className="kicker">Exhibitions</p>
-            <h2 id="exhibitions-title" className="mt-1 font-display text-[clamp(2rem,5vw,4rem)] leading-none">
-              Recent and Upcoming
-            </h2>
+            <h2 id="exhibitions-title" className="mt-1 font-display text-[clamp(2rem,5vw,4.4rem)] leading-none">Recent and Upcoming</h2>
           </div>
           <div className="grid gap-4">
             {[
@@ -133,19 +123,21 @@ export function HomePage() {
               ["Forms of Resilience", "Nairobi · Group Exhibition · October 2025", "A regional exhibition spotlighting East African contemporary painters."],
               ["Kisanii Emerging Voices", "Kigali · Curated Program · July 2026", "A platform exhibition presenting new artists supported through Kisanii Space."]
             ].map(([title, meta, description]) => (
-              <article key={title} className="border border-gallery-line bg-black/10 p-4">
-                <h3 className="font-display text-4xl leading-none">{title}</h3>
-                <p className="mt-1 text-[0.86rem] uppercase tracking-[0.04em] text-[#8c6e3f] dark:text-gallery-accent">{meta}</p>
-                <p className="mt-2 text-gallery-lightSoft dark:text-gallery-soft">{description}</p>
+              <article key={title} className="glass-panel p-5">
+                <h3 className="font-display text-5xl leading-none">{title}</h3>
+                <p className="mt-2 text-[0.86rem] uppercase tracking-[0.12em] text-gallery-accent">{meta}</p>
+                <p className="mt-2 text-[color:var(--text-soft)]">{description}</p>
               </article>
             ))}
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-gallery-line px-6 py-6 text-center text-gallery-soft">
-        <p>© {new Date().getFullYear()} Denis Mpabuka Studio</p>
-      </footer>
+      <SiteFooter />
     </SiteShell>
   );
 }
+
+
+
+

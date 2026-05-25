@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { AboutModal } from "./AboutModal";
 import { FloatingMenu } from "./FloatingMenu";
 import { SiteHeader } from "./SiteHeader";
@@ -16,7 +16,10 @@ export function SiteShell({ children, isHero = false }) {
 
   useEffect(() => {
     const onKey = (event) => {
-      if (event.key === "Escape") setIsAboutOpen(false);
+      if (event.key === "Escape") {
+        setIsAboutOpen(false);
+        setIsMenuOpen(false);
+      }
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -25,12 +28,14 @@ export function SiteShell({ children, isHero = false }) {
   return (
     <>
       <div className="pointer-events-none fixed inset-0 z-[45]" style={GRAIN_STYLE} />
-      <SiteHeader isHero={isHero} onOpenAbout={() => setIsAboutOpen(true)} theme={theme} onToggleTheme={toggleTheme} />
-      <FloatingMenu
-        isOpen={isMenuOpen}
-        onToggle={() => setIsMenuOpen((current) => !current)}
+      <SiteHeader
+        isHero={isHero}
         onOpenAbout={() => setIsAboutOpen(true)}
+        onToggleMenu={() => setIsMenuOpen((current) => !current)}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
+      <FloatingMenu isOpen={isMenuOpen} onOpenAbout={() => setIsAboutOpen(true)} />
       <AboutModal isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
       <div className="flex min-h-screen flex-col">{children}</div>
     </>
