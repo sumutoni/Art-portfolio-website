@@ -5,7 +5,7 @@ import { RiSecurePaymentLine } from "react-icons/ri";
 import { fetchArtworkBySlug } from "../../core/services/artworkService";
 import { SiteShell } from "../../shared/components/SiteShell";
 import { SiteFooter } from "../../shared/components/SiteFooter";
-
+import { Link } from "react-router-dom";
 function Icon({ IconNode }) {
   return <IconNode className="h-5 w-5 text-gallery-accent" />;
 }
@@ -56,9 +56,9 @@ export function AcquirePage() {
     <SiteShell>
       <main className="flex-1 px-5 pb-8 pt-20">
         <div className="mx-auto w-[min(1320px,95vw)]">
-          <a className="mb-3 inline-block text-[0.98rem] text-gallery-accent" href={`/artwork?art=${encodeURIComponent(artwork.slug)}`}>
+          <Link className="mb-3 inline-block text-[0.98rem] text-gallery-accent" to={`/artwork?art=${encodeURIComponent(artwork.slug)}`}>
             ← Back to artwork
-          </a>
+          </Link>
 
           <header className="mb-4">
             <h1 className="font-display text-[clamp(2.2rem,3.4vw,3.2rem)] leading-none text-gallery-lightText dark:text-gallery-text">Acquire Artwork</h1>
